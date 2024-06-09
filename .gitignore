@@ -41,3 +41,4 @@ build/
 
 # User-specific configuration files
 *.env
+/configs/config.json

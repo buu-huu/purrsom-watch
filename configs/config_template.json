@@ -1,0 +1,12 @@
+{
+  "purrEngine": {
+    "purrInterval": "10",
+    "username": "user",
+    "fileDir": "%userdir%/Documents",
+    "fileName": "purrguard.txt",
+    "fileExtension": "docx"
+  },
+  "winEventProvider": {
+    "eventId": "7700"
+  }
+}
