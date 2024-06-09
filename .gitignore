@@ -1,0 +1,43 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+go.work.sum
+
+# GoLand project files
+.idea/
+*.iml
+
+# Go dependency directories (may be different for you depending on your setup)
+vendor/
+Godeps/
+
+# IDE specific files
+.vscode/
+
+# Node modules (if you use any JavaScript libraries)
+node_modules/
+
+# MacOS specific files
+.DS_Store
+
+# Log files
+*.log
+
+# Build directories
+bin/
+build/
+
+# Ignore temporary files, build results, and IDE files
+*~
+
+# User-specific configuration files
+*.env
