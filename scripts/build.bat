@@ -1,7 +1,7 @@
 @echo off
 
 set PROJECT_NAME=purrsom_watch
-set GOOS=linux
+set GOOS=windows
 set GOARCH=amd64
 
 if "%GOOS%"=="windows" (
