@@ -27,7 +27,7 @@ func main() {
 		fmt.Println("Error:", err)
 	}
 
-	err = watchcat.GenerateFile()
+	err = watchcat.GenerateDecoyFile(configs.Configuration)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
