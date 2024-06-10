@@ -33,12 +33,14 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type DecoyFile struct {
-	File    *os.File
-	Entropy float64
-	SizeKB  float64
+	File        *os.File
+	Entropy     float64
+	SizeKB      float64
+	CreatedTime time.Time
 }
 
 var DecoyFileHandle *DecoyFile
@@ -80,9 +82,14 @@ func GenerateDecoyFile(config *configs.Config) error {
 	fmt.Println("Created file")
 
 	err = WriteDecoyFile(DecoyFileHandle)
+	fileStats, err := DecoyFileHandle.File.Stat()
 	if err != nil {
 		return err
 	}
+
+	DecoyFileHandle.SizeKB = float64(fileStats.Size()) / (1 << 10)
+	DecoyFileHandle.CreatedTime = time.Now()
+
 	return nil
 }
 
