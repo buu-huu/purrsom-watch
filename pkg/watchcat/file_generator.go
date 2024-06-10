@@ -45,6 +45,25 @@ type DecoyFile struct {
 	CreatedTime time.Time
 }
 
+// writeDataToFile writes data to the decoy file
+func (file *DecoyFile) writeDataToFile() error {
+	if file.File == nil {
+		return errors.New("DecoyFile is nil")
+	}
+	data, err := hex.DecodeString(file.Data.DataHex)
+	if err != nil {
+		return err
+	}
+	_, err = file.File.Write(data)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Wrote hex data to file %s\n", file.File.Name())
+	file.Entropy = utility.Entropy(data)
+
+	return nil
+}
+
 var DecoyFileHandle *DecoyFile
 
 // GenerateDecoyFile generates a decoy file with parameters from the config
@@ -85,7 +104,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 	DecoyFileHandle.File = file
 	fmt.Println("Created file")
 
-	err = writeDataToFile(DecoyFileHandle)
+	err = DecoyFileHandle.writeDataToFile()
 	fileStats, err := DecoyFileHandle.File.Stat()
 	if err != nil {
 		return err
@@ -93,25 +112,6 @@ func GenerateDecoyFile(config *configs.Config) error {
 
 	DecoyFileHandle.SizeKB = float64(fileStats.Size()) / (1 << 10)
 	DecoyFileHandle.CreatedTime = time.Now()
-
-	return nil
-}
-
-// writeDataToFile writes data to the decoy file
-func writeDataToFile(file *DecoyFile) error {
-	if file.File == nil {
-		return errors.New("DecoyFile is nil")
-	}
-	data, err := hex.DecodeString(file.Data.DataHex)
-	if err != nil {
-		return err
-	}
-	_, err = file.File.Write(data)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Wrote hex data to file %s\n", file.File.Name())
-	file.Entropy = utility.Entropy(data)
 
 	return nil
 }
