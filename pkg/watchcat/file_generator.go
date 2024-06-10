@@ -69,7 +69,10 @@ func GenerateDecoyFile(config *configs.Config) error {
 	}
 
 	// Create decoy file
-	file, err := os.Create(filepath.Join(fileDir, config.PurrEngine.FileName))
+	file, err := os.Create(filepath.Join(
+		fileDir,
+		fmt.Sprintf("%s.%s", config.PurrEngine.FileName, config.PurrEngine.FileExtension),
+	))
 	if err != nil {
 		return err
 	}
