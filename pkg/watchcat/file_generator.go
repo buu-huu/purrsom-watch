@@ -56,7 +56,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 		DecoyFileHandle = &DecoyFile{}
 	}
 
-	fileDir, err := CreateAbsoluteDirString(config)
+	fileDir, err := createAbsoluteDirString(config)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 	DecoyFileHandle.File = file
 	fmt.Println("Created file")
 
-	err = WriteDecoyFile(DecoyFileHandle, decoy.HexDecoy)
+	err = writeDataToFile(DecoyFileHandle, decoy.HexDecoy)
 	fileStats, err := DecoyFileHandle.File.Stat()
 	if err != nil {
 		return err
@@ -95,8 +95,8 @@ func GenerateDecoyFile(config *configs.Config) error {
 	return nil
 }
 
-// WriteDecoyFile writes data to the decoy file
-func WriteDecoyFile(file *DecoyFile, hexData string) error {
+// writeDataToFile writes data to the decoy file
+func writeDataToFile(file *DecoyFile, hexData string) error {
 	if file.File == nil {
 		return errors.New("DecoyFile is nil")
 	}
@@ -104,20 +104,18 @@ func WriteDecoyFile(file *DecoyFile, hexData string) error {
 	if err != nil {
 		return err
 	}
-
 	_, err = file.File.Write(data)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("Wrote hex to decoy file")
+	fmt.Printf("Wrote hex data to file %s\n", file.File.Name())
 	file.Entropy = utility.Entropy(data)
 	fmt.Println("Entropy:", file.Entropy)
 	return nil
 }
 
-// CreateAbsoluteDirString creates an absolute directory string from userdir and the rest
-func CreateAbsoluteDirString(config *configs.Config) (string, error) {
+// createAbsoluteDirString creates an absolute directory string from userdir and the rest
+func createAbsoluteDirString(config *configs.Config) (string, error) {
 	var userDir string
 	if configs.Configuration.PurrEngine.Username != "" {
 		username, err := user.Lookup(config.PurrEngine.Username)
