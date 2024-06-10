@@ -36,6 +36,7 @@ import (
 	"time"
 )
 
+// DecoyFile struct holds metadata and a handle to the actual file
 type DecoyFile struct {
 	File        *os.File
 	Entropy     float64
@@ -45,6 +46,7 @@ type DecoyFile struct {
 
 var DecoyFileHandle *DecoyFile
 
+// GenerateDecoyFile generates a decoy file with parameters from the config
 func GenerateDecoyFile(config *configs.Config) error {
 	if !configs.IsConfigParsed(config) {
 		return errors.New("config not parsed")
@@ -81,7 +83,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 	DecoyFileHandle.File = file
 	fmt.Println("Created file")
 
-	err = WriteDecoyFile(DecoyFileHandle)
+	err = WriteDecoyFile(DecoyFileHandle, decoy.HexDecoy)
 	fileStats, err := DecoyFileHandle.File.Stat()
 	if err != nil {
 		return err
@@ -93,26 +95,28 @@ func GenerateDecoyFile(config *configs.Config) error {
 	return nil
 }
 
-func WriteDecoyFile(fileWithEntropy *DecoyFile) error {
-	if fileWithEntropy.File == nil {
+// WriteDecoyFile writes data to the decoy file
+func WriteDecoyFile(file *DecoyFile, hexData string) error {
+	if file.File == nil {
 		return errors.New("DecoyFile is nil")
 	}
-	data, err := hex.DecodeString(decoy.HexDecoy)
+	data, err := hex.DecodeString(hexData)
 	if err != nil {
 		return err
 	}
 
-	_, err = fileWithEntropy.File.Write(data)
+	_, err = file.File.Write(data)
 	if err != nil {
 		return err
 	}
 
 	fmt.Println("Wrote hex to decoy file")
-	fileWithEntropy.Entropy = utility.Entropy(data)
-	fmt.Println("Entropy:", fileWithEntropy.Entropy)
+	file.Entropy = utility.Entropy(data)
+	fmt.Println("Entropy:", file.Entropy)
 	return nil
 }
 
+// CreateAbsoluteDirString creates an absolute directory string from userdir and the rest
 func CreateAbsoluteDirString(config *configs.Config) (string, error) {
 	var userDir string
 	if configs.Configuration.PurrEngine.Username != "" {
