@@ -40,6 +40,7 @@ import (
 type DecoyFile struct {
 	File        *os.File
 	Entropy     float64
+	Data        *decoy.DataOriginal
 	SizeKB      float64
 	CreatedTime time.Time
 }
@@ -73,6 +74,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 	}
 
 	// Create decoy file
+	DecoyFileHandle.Data = decoy.Data01
 	file, err := os.Create(filepath.Join(
 		fileDir,
 		fmt.Sprintf("%s.%s", config.PurrEngine.FileName, config.PurrEngine.FileExtension),
@@ -83,7 +85,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 	DecoyFileHandle.File = file
 	fmt.Println("Created file")
 
-	err = writeDataToFile(DecoyFileHandle, decoy.HexDecoy)
+	err = writeDataToFile(DecoyFileHandle)
 	fileStats, err := DecoyFileHandle.File.Stat()
 	if err != nil {
 		return err
@@ -96,11 +98,11 @@ func GenerateDecoyFile(config *configs.Config) error {
 }
 
 // writeDataToFile writes data to the decoy file
-func writeDataToFile(file *DecoyFile, hexData string) error {
+func writeDataToFile(file *DecoyFile) error {
 	if file.File == nil {
 		return errors.New("DecoyFile is nil")
 	}
-	data, err := hex.DecodeString(hexData)
+	data, err := hex.DecodeString(file.Data.DataHex)
 	if err != nil {
 		return err
 	}
@@ -110,7 +112,7 @@ func writeDataToFile(file *DecoyFile, hexData string) error {
 	}
 	fmt.Printf("Wrote hex data to file %s\n", file.File.Name())
 	file.Entropy = utility.Entropy(data)
-	fmt.Println("Entropy:", file.Entropy)
+
 	return nil
 }
 
