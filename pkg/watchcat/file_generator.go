@@ -41,11 +41,15 @@ type DecoyFile struct {
 	SizeKB  float64
 }
 
-var DecoyFileHandle DecoyFile
+var DecoyFileHandle *DecoyFile
 
 func GenerateDecoyFile(config *configs.Config) error {
 	if !configs.IsConfigParsed(config) {
 		return errors.New("config not parsed")
+	}
+
+	if DecoyFileHandle == nil {
+		DecoyFileHandle = &DecoyFile{}
 	}
 
 	fileDir, err := CreateAbsoluteDirString(config)
@@ -72,7 +76,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 	DecoyFileHandle.File = file
 	fmt.Println("Created file")
 
-	err = WriteDecoyFile(&DecoyFileHandle)
+	err = WriteDecoyFile(DecoyFileHandle)
 	if err != nil {
 		return err
 	}
