@@ -51,6 +51,7 @@ type Config struct {
 
 var Configuration *Config
 
+// InitConfig initializes the config to access via an exported variable
 func InitConfig(filePath string) error {
 	Configuration, err := ParseConfig(filePath)
 	if err != nil {
@@ -107,6 +108,8 @@ func IsConfigFileLegitimate(c *Config) (bool, error) {
 	if !IsConfigParsed(c) {
 		return false, errors.New("config file was not parsed")
 	}
+
+	// Validate FileDir
 	re := regexp.MustCompile(FileDirRegex)
 	if !re.MatchString(c.PurrEngine.FileDir) {
 		return false, errors.New(fmt.Sprint("Config attribute FileDir does not match regex ", FileDirRegex))
