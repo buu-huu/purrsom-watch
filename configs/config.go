@@ -31,7 +31,8 @@ import (
 )
 
 const (
-	FileDirRegex = `^%userdir%[/\\].*$`
+	PlaceholderUserdir = "%userdir%"
+	FileDirRegex       = `^` + PlaceholderUserdir + `[/\\].*$`
 )
 
 // Config struct defines the structure of the JSON configuration
