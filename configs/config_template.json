@@ -1,10 +1,14 @@
 {
   "purrEngine": {
     "purrInterval": "10",
-    "username": "user",
-    "fileDir": "%userdir%/Documents",
-    "fileName": "purrguard",
-    "fileExtension": "docx"
+    "decoyFile": {
+      "fileName": "purrguard",
+      "fileExtension": "docx",
+      "location": {
+        "fileDir": "%userdir%/Documents/purr",
+        "username": "user"
+      }
+    }
   },
   "winEventProvider": {
     "eventId": "7700"

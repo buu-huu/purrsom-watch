@@ -96,7 +96,10 @@ func GenerateDecoyFile(config *configs.Config) error {
 	DecoyFileHandle.Data = decoy.Data01
 	file, err := os.Create(filepath.Join(
 		fileDir,
-		fmt.Sprintf("%s.%s", config.PurrEngine.FileName, config.PurrEngine.FileExtension),
+		fmt.Sprintf(
+			"%s.%s",
+			config.PurrEngine.DecoyFile.FileName,
+			config.PurrEngine.DecoyFile.FileExtension),
 	))
 	if err != nil {
 		return err
@@ -119,14 +122,14 @@ func GenerateDecoyFile(config *configs.Config) error {
 // createAbsoluteDirString creates an absolute directory string from userdir and the rest
 func createAbsoluteDirString(config *configs.Config) (string, error) {
 	var userDir string
-	if configs.Configuration.PurrEngine.Username != "" {
-		username, err := user.Lookup(config.PurrEngine.Username)
+	if config.PurrEngine.DecoyFile.Location.Username != "" {
+		username, err := user.Lookup(config.PurrEngine.DecoyFile.Location.Username)
 		if err != nil {
 			return "", err
 		}
 		userDir = username.HomeDir
 	}
-	dirStringSplit := strings.SplitN(config.PurrEngine.FileDir, "%userdir%/", 2)
+	dirStringSplit := strings.SplitN(config.PurrEngine.DecoyFile.Location.FileDir, "%userdir%/", 2)
 	if len(dirStringSplit) != 2 {
 		return "", errors.New("invalid fileDir format in configuration file")
 	}

@@ -38,11 +38,15 @@ const (
 // Config struct defines the structure of the JSON configuration
 type Config struct {
 	PurrEngine struct {
-		PurrInterval  string `json:"purrInterval"`
-		Username      string `json:"username"`
-		FileDir       string `json:"fileDir"`
-		FileName      string `json:"fileName"`
-		FileExtension string `json:"fileExtension"`
+		PurrInterval string `json:"purrInterval"`
+		DecoyFile    struct {
+			FileName      string `json:"fileName"`
+			FileExtension string `json:"fileExtension"`
+			Location      struct {
+				FileDir  string `json:"fileDir"`
+				Username string `json:"username"`
+			} `json:"Location"`
+		} `json:"decoyFile"`
 	} `json:"purrEngine"`
 	WinEventProvider struct {
 		EventId string `json:"eventId"`
@@ -111,7 +115,7 @@ func IsConfigFileLegitimate(c *Config) (bool, error) {
 
 	// Validate FileDir
 	re := regexp.MustCompile(FileDirRegex)
-	if !re.MatchString(c.PurrEngine.FileDir) {
+	if !re.MatchString(c.PurrEngine.DecoyFile.Location.FileDir) {
 		return false, errors.New(fmt.Sprint("Config attribute FileDir does not match regex ", FileDirRegex))
 	}
 	return true, nil
