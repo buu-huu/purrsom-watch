@@ -3,7 +3,7 @@
     "purrInterval": "10",
     "username": "user",
     "fileDir": "%userdir%/Documents",
-    "fileName": "purrguard.txt",
+    "fileName": "purrguard",
     "fileExtension": "docx"
   },
   "winEventProvider": {
