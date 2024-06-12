@@ -21,3 +21,27 @@
 // SOFTWARE.
 
 package watchcat
+
+import (
+	"fmt"
+	"github.com/buu-huu/purrsom-watch/configs"
+	"strconv"
+	"time"
+)
+
+func Watch(config *configs.Config) {
+	interval, err := strconv.Atoi(config.PurrEngine.PurrInterval)
+	if err != nil {
+		fmt.Println("Could not parse PurrInterval. Defaulting to 10s")
+		interval = 10
+	}
+	ticker := time.Tick(time.Duration(interval) * time.Second)
+	for range ticker {
+		doSomething()
+	}
+}
+
+func doSomething() {
+	fmt.Println("Doing something...")
+	// Your code to execute goes here
+}

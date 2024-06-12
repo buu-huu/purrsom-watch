@@ -25,7 +25,7 @@ package main
 import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
-	"github.com/buu-huu/purrsom-watch/pkg/watchcat"
+	"github.com/buu-huu/purrsom-watch/internal/watchcat"
 	"os"
 )
 
