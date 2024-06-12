@@ -7,9 +7,9 @@ This repository is work in progress. Development is ongoing but will take some t
 
 ## 📜 Table of Contents
 - [Features](#-features)
-- [Installation](#-installation)
+- [Installation](#%EF%B8%8F-installation)
 - [Usage](#-usage)
-- [Roadmap](#-roadmap)
+- [Roadmap](#%EF%B8%8F-roadmap)
 - [Contributing](#-contributing)
 - [License](#-license)
 
