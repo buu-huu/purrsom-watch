@@ -6,14 +6,14 @@ Welcome to **PurrsomWatch**, a Golang-based software designed to detect ransomwa
 This repository is work in progress. Development is ongoing but will take some time. Releases will be made and tagged, when a certain set of features is implemented and tested. 
 
 ## 📜 Table of Contents
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-## 🌟 Features <a name="features"></a>
+## 🌟 Features
 - **Decoy File Detection:** Places a decoy file in specified directories to detect ransomware activity.
 - **Event Logging:** Logs ransomware detection events into the Windows Event Log with custom logs for easy SIEM integration.
 - **Real-Time Monitoring:** Monitors decoy files for read and modification (encryption) activities.
