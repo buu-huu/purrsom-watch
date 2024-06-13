@@ -25,7 +25,7 @@ To install PurrsomWatch, follow these steps:
 1. Clone the repository:
     ```sh
     git clone https://github.com/buu-huu/purrsom-watch.git
-    cd purrsom-watch
+    cd purrsom-watch/cmd/watch/
     ```
 
 2. Build the project:
