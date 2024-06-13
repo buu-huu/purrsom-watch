@@ -8,6 +8,8 @@ import (
 )
 
 // CreateAbsoluteDirString creates an absolute directory string from userdir and the rest
+// param username expects a string of the username
+// param fileDir expexts a string of the directory with a placeholder included
 func CreateAbsoluteDirString(username string, fileDir string) (string, error) {
 	var userDir string
 	if username != "" {
