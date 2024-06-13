@@ -20,28 +20,71 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Package watchcat contains the program logic for ransomware detection. This includes decoy file generation and
+// the detection engine itself
 package watchcat
 
 import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
-	"strconv"
-	"time"
+	"github.com/buu-huu/purrsom-watch/pkg/utility"
+	"github.com/fsnotify/fsnotify"
+	"log"
 )
 
+// Watch starts the watching of the decoy file directory
 func Watch(config *configs.Config) {
-	interval, err := strconv.Atoi(config.PurrEngine.PurrInterval)
+	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		fmt.Println("Could not parse PurrInterval. Defaulting to 10s")
-		interval = 10
+		fmt.Println(err)
 	}
-	ticker := time.Tick(time.Duration(interval) * time.Second)
-	for range ticker {
-		doSomething()
-	}
-}
+	defer watcher.Close()
 
-func doSomething() {
-	fmt.Println("Doing something...")
-	// Your code to execute goes here
+	directory, err := utility.CreateAbsoluteDirString(
+		config.PurrEngine.DecoyFile.Location.Username,
+		config.PurrEngine.DecoyFile.Location.FileDir,
+		configs.PlaceholderUserdir)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = watcher.Add(directory)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				fmt.Printf("Event: %s\n", event)
+				if event.Op&fsnotify.Write == fsnotify.Write {
+					fmt.Printf("Modified file: %s\n", event.Name)
+				}
+				if event.Op&fsnotify.Create == fsnotify.Create {
+					fmt.Printf("Created file: %s\n", event.Name)
+				}
+				if event.Op&fsnotify.Remove == fsnotify.Remove {
+					fmt.Printf("Removed file: %s\n", event.Name)
+				}
+				if event.Op&fsnotify.Rename == fsnotify.Rename {
+					fmt.Printf("Renamed file: %s\n", event.Name)
+				}
+				if event.Op&fsnotify.Chmod == fsnotify.Chmod {
+					fmt.Printf("Changed permissions: %s\n", event.Name)
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				fmt.Printf("Error: %s\n", err)
+			}
+		}
+	}()
+
+	done := make(chan bool)
+	<-done
 }
