@@ -27,7 +27,7 @@ package watchcat
 import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
-	"github.com/buu-huu/purrsom-watch/pkg/utility"
+	"github.com/buu-huu/purrsom-watch/pkg/util/directory"
 	"github.com/fsnotify/fsnotify"
 	"log"
 )
@@ -40,7 +40,7 @@ func Watch(config *configs.Config) {
 	}
 	defer watcher.Close()
 
-	directory, err := utility.CreateAbsoluteDirString(
+	directory, err := directory.CreateAbsoluteDirString(
 		config.PurrEngine.DecoyFile.Location.Username,
 		config.PurrEngine.DecoyFile.Location.FileDir,
 		configs.PlaceholderUserdir)

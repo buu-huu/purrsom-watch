@@ -20,36 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Package utility contains generic functions and helpers
-package utility
+// Package cryptoanalysis contains generic functions and helpers
+package cryptoanalysis
 
 import (
-	"errors"
-	"os/user"
-	"path/filepath"
-	"strings"
+	"math"
 )
 
-// CreateAbsoluteDirString creates an absolute directory string from userdir and the rest
-// param username expects a string of the username
-// param fileDir expects a string of the directory with a placeholder included
-func CreateAbsoluteDirString(username string, fileDir string, placeholder string) (string, error) {
-	var userDir string
-	if username != "" {
-		username, err := user.Lookup(username)
-		if err != nil {
-			return "", err
-		}
-		userDir = username.HomeDir
+// Entropy returns the shannon entropy value for a byte sequence
+func Entropy(data []byte) float64 {
+	freq := make(map[byte]int)
+	for _, b := range data {
+		freq[b]++
 	}
-	placeholderPrepared := placeholder + "/"
-	dirStringSplit := strings.SplitN(fileDir, placeholderPrepared, 2)
-	if len(dirStringSplit) != 2 {
-		return "", errors.New("invalid fileDir format in configuration file")
-	}
-	fileDirSpecific := dirStringSplit[1]
-	fileDirAbsolute := filepath.Join(userDir, fileDirSpecific)
 
-	//fmt.Println(fileDirAbsolute)
-	return fileDirAbsolute, nil
+	entropy := 0.0
+	total := float64(len(data))
+	for _, count := range freq {
+		probability := float64(count) / total
+		entropy -= probability * math.Log2(probability)
+	}
+	return entropy
 }

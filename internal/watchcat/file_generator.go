@@ -30,7 +30,8 @@ import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
 	"github.com/buu-huu/purrsom-watch/data/decoy"
-	"github.com/buu-huu/purrsom-watch/pkg/utility"
+	"github.com/buu-huu/purrsom-watch/pkg/util/directory"
+	"github.com/buu-huu/purrsom-watch/pkg/util/ransomware/cryptoanalysis"
 	"os"
 	"path/filepath"
 	"time"
@@ -62,7 +63,7 @@ func (file *DecoyFile) writeDataToFile() error {
 		return err
 	}
 	fmt.Printf("Wrote hex data to file %s\n", file.File.Name())
-	file.Entropy = utility.Entropy(data)
+	file.Entropy = cryptoanalysis.Entropy(data)
 
 	return nil
 }
@@ -77,7 +78,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 		DecoyFileHandle = &DecoyFile{}
 	}
 
-	fileDir, err := utility.CreateAbsoluteDirString(
+	fileDir, err := directory.CreateAbsoluteDirString(
 		configs.Configuration.PurrEngine.DecoyFile.Location.Username,
 		configs.Configuration.PurrEngine.DecoyFile.Location.FileDir,
 		configs.PlaceholderUserdir)
