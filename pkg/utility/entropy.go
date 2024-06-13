@@ -20,12 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Package utility contains generic functions and helpers
 package utility
 
 import (
 	"math"
 )
 
+// Entropy returns the shannon entropy value for a byte sequence
 func Entropy(data []byte) float64 {
 	freq := make(map[byte]int)
 	for _, b := range data {

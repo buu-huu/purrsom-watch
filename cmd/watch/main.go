@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Package main contains the main function and is therefore pretty slim
 package main
 
 import (
@@ -29,6 +30,8 @@ import (
 	"os"
 )
 
+// main is the entry point for the application. It handles parsing of command line arguments and error
+// handling. It calls the corresponding submodules of the program
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Println("Usage: purrsom_watch <config_file_path>")
@@ -54,4 +57,6 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
+
+	watchcat.Watch(configs.Configuration)
 }

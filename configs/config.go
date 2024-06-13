@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Package configs contains program configuration related stuff. This includes the config file that must
+// be provided to run the application
 package configs
 
 import (
@@ -53,9 +55,11 @@ type Config struct {
 	} `json:"winEventProvider"`
 }
 
+// Configuration is an exported pointer to the loaded configuration to make it accessible by every
+// other submodule of the application
 var Configuration *Config
 
-// InitConfig initializes the config to access via an exported variable
+// InitConfig initializes the programs configuration file
 func InitConfig(filePath string) error {
 	Configuration, err := ParseConfig(filePath)
 	if err != nil {

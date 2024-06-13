@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Package watchcat contains the program logic for ransomware detection. This includes decoy file generation and
+// the detection engine itself
 package watchcat
 
 import (
@@ -33,6 +35,9 @@ import (
 	"path/filepath"
 	"time"
 )
+
+// DecoyFileHandle is an exported pointer to the decoy file
+var DecoyFileHandle *DecoyFile
 
 // DecoyFile struct holds metadata and a handle to the actual file
 type DecoyFile struct {
@@ -61,8 +66,6 @@ func (file *DecoyFile) writeDataToFile() error {
 
 	return nil
 }
-
-var DecoyFileHandle *DecoyFile
 
 // GenerateDecoyFile generates a decoy file with parameters from the config
 func GenerateDecoyFile(config *configs.Config) error {
