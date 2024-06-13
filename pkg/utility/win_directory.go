@@ -9,8 +9,8 @@ import (
 
 // CreateAbsoluteDirString creates an absolute directory string from userdir and the rest
 // param username expects a string of the username
-// param fileDir expexts a string of the directory with a placeholder included
-func CreateAbsoluteDirString(username string, fileDir string) (string, error) {
+// param fileDir expects a string of the directory with a placeholder included
+func CreateAbsoluteDirString(username string, fileDir string, placeholder string) (string, error) {
 	var userDir string
 	if username != "" {
 		username, err := user.Lookup(username)
@@ -19,7 +19,8 @@ func CreateAbsoluteDirString(username string, fileDir string) (string, error) {
 		}
 		userDir = username.HomeDir
 	}
-	dirStringSplit := strings.SplitN(fileDir, "%userdir%/", 2)
+	placeholderPrepared := placeholder + "/"
+	dirStringSplit := strings.SplitN(fileDir, placeholderPrepared, 2)
 	if len(dirStringSplit) != 2 {
 		return "", errors.New("invalid fileDir format in configuration file")
 	}

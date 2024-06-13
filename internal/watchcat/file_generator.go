@@ -76,7 +76,8 @@ func GenerateDecoyFile(config *configs.Config) error {
 
 	fileDir, err := utility.CreateAbsoluteDirString(
 		configs.Configuration.PurrEngine.DecoyFile.Location.Username,
-		configs.Configuration.PurrEngine.DecoyFile.Location.FileDir)
+		configs.Configuration.PurrEngine.DecoyFile.Location.FileDir,
+		configs.PlaceholderUserdir)
 	if err != nil {
 		return err
 	}
