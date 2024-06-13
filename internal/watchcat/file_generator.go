@@ -43,6 +43,7 @@ var DecoyFileHandle *DecoyFile
 // DecoyFile struct holds metadata and a handle to the actual file
 type DecoyFile struct {
 	File        *os.File
+	FilePath    string
 	Entropy     float64
 	Data        *decoy.DataOriginal
 	SizeKB      float64
@@ -98,14 +99,17 @@ func GenerateDecoyFile(config *configs.Config) error {
 	}
 
 	// Create decoy file
-	DecoyFileHandle.Data = decoy.Data01
-	file, err := os.Create(filepath.Join(
+	DecoyFileHandle.FilePath = filepath.Join(
 		fileDir,
 		fmt.Sprintf(
 			"%s.%s",
 			config.PurrEngine.DecoyFile.FileName,
-			config.PurrEngine.DecoyFile.FileExtension),
-	))
+			config.PurrEngine.DecoyFile.FileExtension))
+
+	DecoyFileHandle.Data = decoy.Data01
+	file, err := os.Create(DecoyFileHandle.FilePath)
+	defer file.Close()
+
 	if err != nil {
 		return err
 	}
