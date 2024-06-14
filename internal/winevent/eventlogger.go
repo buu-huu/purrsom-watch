@@ -6,6 +6,7 @@ import (
 	"golang.org/x/sys/windows/svc/eventlog"
 	"strings"
 	"syscall"
+	"time"
 )
 
 const (
@@ -22,6 +23,29 @@ const (
 func (s SubSource) String() string {
 	return [...]string{"System", "Detection"}[s]
 }
+
+type WinEvent struct {
+	Timestamp time.Time
+	Message   string
+	Severity  EventSeverity
+	Type      SubSource
+}
+
+type EventSeverity uint32
+
+const (
+	Info EventSeverity = iota
+	Warning
+	Error
+)
+
+type EventID uint32
+
+const (
+	EventIDInfo    EventID = 7705
+	EventIDWarning EventID = 7706
+	EventIDError   EventID = 7707
+)
 
 // InstallWinEventSource TODO: Unexport function after testing
 func InstallWinEventSource() error {
@@ -46,5 +70,36 @@ func InstallWinEventSource() error {
 			fmt.Printf("Wineventlog subsource %s installed successfully.\n", sourceToInstall)
 		}
 	}
+	return nil
+}
+
+func Log(event WinEvent) error {
+	source := fmt.Sprintf("%s-%s", WinEventSourceName, event.Type.String())
+	elog, err := eventlog.Open(source)
+	if err != nil {
+		fmt.Printf("Failed to open winevent log for source %s: %s\n", source, err.Error())
+		return err
+	}
+	defer elog.Close()
+
+	var id EventID
+	switch event.Severity {
+	case Info:
+		id = EventIDInfo
+		err = elog.Info(uint32(id), event.Message)
+	case Warning:
+		id = EventIDWarning
+		err = elog.Warning(uint32(id), event.Message)
+	case Error:
+		id = EventIDError
+		err = elog.Error(uint32(id), event.Message)
+	default:
+		err = fmt.Errorf("unknown event severity: %d", event.Severity)
+	}
+
+	if err != nil {
+		fmt.Println("Failed to write winevent log event:", err)
+	}
+	fmt.Printf("Successfully logged event: %s\n", event.Message)
 	return nil
 }
