@@ -101,10 +101,7 @@ func GenerateDecoyFile(config *configs.Config) error {
 	// Create decoy file
 	DecoyFileHandle.FilePath = filepath.Join(
 		fileDir,
-		fmt.Sprintf(
-			"%s.%s",
-			config.PurrEngine.DecoyFile.FileName,
-			config.PurrEngine.DecoyFile.FileExtension))
+		fmt.Sprintf("%s.%s", config.PurrEngine.DecoyFile.FileName, config.PurrEngine.DecoyFile.FileExtension))
 
 	DecoyFileHandle.Data = decoy.Data01
 	file, err := os.Create(DecoyFileHandle.FilePath)
