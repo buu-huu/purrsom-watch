@@ -47,7 +47,7 @@ func main() {
 		return
 	}
 	if err != nil {
-		fmt.Println("Error checking whether winevent providers are installed: ", err)
+		fmt.Println("Error checking if winevent providers are installed: ", err)
 		return
 	}
 
