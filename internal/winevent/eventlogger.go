@@ -95,11 +95,12 @@ func Log(event WinEvent) error {
 		id = EventIDError
 		err = elog.Error(uint32(id), event.Message)
 	default:
-		err = fmt.Errorf("unknown event severity: %d", event.Severity)
+		return fmt.Errorf("unknown event severity: %d", event.Severity)
 	}
 
 	if err != nil {
 		fmt.Println("Failed to write winevent log event:", err)
+		return err
 	}
 	fmt.Printf("Successfully logged event: %s\n", event.Message)
 	return nil
