@@ -40,7 +40,7 @@ func main() {
 		return
 	}
 
-	wineventlogger := winevent.GetLogger()
+	eventlogger := winevent.GetLogger()
 	providerCheck, err := winevent.AreAllEventProvidersInstalled()
 	if !providerCheck {
 		fmt.Println("Winevent log providers not installed! Install providers first using install script.")
@@ -79,7 +79,7 @@ func main() {
 		Type:      winevent.System,
 	}
 
-	err = wineventlogger.Log(event)
+	err = eventlogger.Log(event)
 	if err != nil {
 		fmt.Println(err)
 	}
