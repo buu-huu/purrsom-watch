@@ -11,17 +11,17 @@ import (
 )
 
 const (
-	WinEventSourceName string = "PurrsomWatch"
+	ProviderName string = "PurrsomWatch"
 )
 
-type SubSource int
+type SubProvider int
 
 const (
-	System SubSource = iota
+	System SubProvider = iota
 	Detection
 )
 
-func (s SubSource) String() string {
+func (s SubProvider) String() string {
 	return [...]string{"System", "Detection"}[s]
 }
 
@@ -29,7 +29,7 @@ type WinEvent struct {
 	Timestamp time.Time
 	Message   string
 	Severity  EventSeverity
-	Type      SubSource
+	Type      SubProvider
 }
 
 type EventSeverity uint32
@@ -59,27 +59,27 @@ func NewEventLogger() *EventLogger {
 	return &EventLogger{}
 }
 
-// InstallWinEventSource installs the event sources for the application TODO: Unexport function after testing
-func (e *EventLogger) InstallWinEventSource() error {
-	for _, subSource := range []SubSource{System, Detection} {
-		sourceToInstall := fmt.Sprintf("%s-%s", WinEventSourceName, subSource.String())
-		err := eventlog.InstallAsEventCreate(sourceToInstall, eventlog.Info|eventlog.Warning|eventlog.Error)
+// InstallWinEventProvider installs the event provider for the application TODO: Unexport function after testing
+func (e *EventLogger) InstallWinEventProvider() error {
+	for _, subProvider := range []SubProvider{System, Detection} {
+		providerToInstall := fmt.Sprintf("%s-%s", ProviderName, subProvider.String())
+		err := eventlog.InstallAsEventCreate(providerToInstall, eventlog.Info|eventlog.Warning|eventlog.Error)
 		if err != nil {
-			// Trying to parse errors here to generic errors for proper logging...
+			// Trying to parse access denied error here
 			var errno syscall.Errno
 			if errors.As(err, &errno) && errors.Is(errno, syscall.ERROR_ACCESS_DENIED) {
-				fmt.Printf("Error installing Wineventlog subsource %s. Insufficient permissions: %s\n", sourceToInstall, syscall.ERROR_ACCESS_DENIED)
+				fmt.Printf("Error installing winevent log provider %s. Insufficient permissions: %s\n", providerToInstall, syscall.ERROR_ACCESS_DENIED)
 				return err
 			} else {
 				// Fall back to string of the error message if not a permission problem
 				if strings.Contains(err.Error(), "registry key already exists") {
-					fmt.Printf("It appears, that Wineventlog subsource %s is already registered/installed: %s\n", sourceToInstall, err.Error())
+					fmt.Printf("It appears, that winevent log provider %s is already registered/installed: %s\n", providerToInstall, err.Error())
 				} else {
-					fmt.Printf("Unknown error registering/installing Wineventlog subsource %s: %s\n", sourceToInstall, err.Error())
+					fmt.Printf("Unknown error registering/installing winevent log provider %s: %s\n", providerToInstall, err.Error())
 				}
 			}
 		} else {
-			fmt.Printf("Wineventlog subsource %s installed successfully.\n", sourceToInstall)
+			fmt.Printf("Winevent log provider %s installed successfully.\n", providerToInstall)
 		}
 	}
 	return nil
@@ -87,10 +87,10 @@ func (e *EventLogger) InstallWinEventSource() error {
 
 // Log logs an event to the Windows Event Log
 func (e *EventLogger) Log(event WinEvent) error {
-	source := fmt.Sprintf("%s-%s", WinEventSourceName, event.Type.String())
+	source := fmt.Sprintf("%s-%s", ProviderName, event.Type.String())
 	elog, err := eventlog.Open(source)
 	if err != nil {
-		fmt.Printf("Failed to open winevent log for source %s: %s\n", source, err.Error())
+		fmt.Printf("Failed to open winevent log for provider %s: %s\n", source, err.Error())
 		return err
 	}
 	defer elog.Close()
