@@ -27,7 +27,9 @@ import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
 	"github.com/buu-huu/purrsom-watch/internal/watchcat"
+	"github.com/buu-huu/purrsom-watch/internal/winevent"
 	"os"
+	"time"
 )
 
 // main is the entry point for the application. It handles parsing of command line arguments and error
@@ -38,9 +40,19 @@ func main() {
 		return
 	}
 
-	configFilePath := os.Args[1]
+	wineventlogger := winevent.GetLogger()
+	providerCheck, err := winevent.AreAllEventProvidersInstalled()
+	if !providerCheck {
+		fmt.Println("Winevent log providers not installed! Install providers first using install script.")
+		return
+	}
+	if err != nil {
+		fmt.Println("Error checking whether winevent providers are installed: ", err)
+		return
+	}
 
-	err := configs.InitConfig(configFilePath)
+	configFilePath := os.Args[1]
+	err = configs.InitConfig(configFilePath)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -58,5 +70,17 @@ func main() {
 		return
 	}
 
-	watchcat.Watch(configs.Configuration)
+	//watchcat.Watch(configs.Configuration)
+
+	event := winevent.WinEvent{
+		Timestamp: time.Now(),
+		Message:   "This is a test log message.",
+		Severity:  winevent.Info,
+		Type:      winevent.System,
+	}
+
+	err = wineventlogger.Log(event)
+	if err != nil {
+		fmt.Println(err)
+	}
 }

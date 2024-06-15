@@ -3,6 +3,7 @@ package winevent
 import (
 	"errors"
 	"fmt"
+	"golang.org/x/sys/windows/registry"
 	"golang.org/x/sys/windows/svc/eventlog"
 	"strings"
 	"sync"
@@ -60,7 +61,7 @@ func NewEventLogger() *EventLogger {
 }
 
 // InstallWinEventProvider installs the event provider for the application TODO: Unexport function after testing
-func (e *EventLogger) InstallWinEventProvider() error {
+func InstallWinEventProvider() error {
 	for _, subProvider := range []SubProvider{System, Detection} {
 		providerToInstall := fmt.Sprintf("%s-%s", ProviderName, subProvider.String())
 		err := eventlog.InstallAsEventCreate(providerToInstall, eventlog.Info|eventlog.Warning|eventlog.Error)
@@ -116,6 +117,38 @@ func (e *EventLogger) Log(event WinEvent) error {
 	}
 	fmt.Printf("Successfully logged event: %s\n", event.Message)
 	return nil
+}
+
+// IsEventProviderInstalled checks if the specified event provider is installed
+func IsEventProviderInstalled(subProvider SubProvider) (bool, error) {
+	source := fmt.Sprintf("%s-%s", ProviderName, subProvider.String())
+	regKey := fmt.Sprintf(`SYSTEM\CurrentControlSet\Services\EventLog\Application\%s`, source)
+
+	key, err := registry.OpenKey(registry.LOCAL_MACHINE, regKey, registry.QUERY_VALUE)
+	if err != nil {
+		if errors.Is(err, registry.ErrNotExist) {
+			return false, nil
+		}
+		return false, err
+	}
+	defer key.Close()
+
+	return true, nil
+}
+
+// AreAllEventProvidersInstalled checks if all event providers are installed
+func AreAllEventProvidersInstalled() (bool, error) {
+	for _, subProvider := range []SubProvider{System, Detection} {
+		installed, err := IsEventProviderInstalled(subProvider)
+		if err != nil {
+			return false, err
+		}
+		if !installed {
+			fmt.Printf("Event provider %s is not installed.\n", subProvider.String())
+			return false, nil
+		}
+	}
+	return true, nil
 }
 
 // init initializes the global winevent logger
