@@ -47,7 +47,7 @@ const (
 	EventIDError   EventID = 7707
 )
 
-// InstallWinEventSource TODO: Unexport function after testing
+// InstallWinEventSource installs the event sources for the application TODO: Unexport function after testing
 func InstallWinEventSource() error {
 	for _, subSource := range []SubSource{System, Detection} {
 		sourceToInstall := fmt.Sprintf("%s-%s", WinEventSourceName, subSource.String())
@@ -73,6 +73,7 @@ func InstallWinEventSource() error {
 	return nil
 }
 
+// Log logs an event to the Windows Event Log
 func Log(event WinEvent) error {
 	source := fmt.Sprintf("%s-%s", WinEventSourceName, event.Type.String())
 	elog, err := eventlog.Open(source)
