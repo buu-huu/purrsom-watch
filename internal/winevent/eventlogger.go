@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"golang.org/x/sys/windows/svc/eventlog"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -47,8 +48,19 @@ const (
 	EventIDError   EventID = 7707
 )
 
+var (
+	globalEventLogger *EventLogger
+	once              sync.Once
+)
+
+type EventLogger struct{}
+
+func NewEventLogger() *EventLogger {
+	return &EventLogger{}
+}
+
 // InstallWinEventSource installs the event sources for the application TODO: Unexport function after testing
-func InstallWinEventSource() error {
+func (e *EventLogger) InstallWinEventSource() error {
 	for _, subSource := range []SubSource{System, Detection} {
 		sourceToInstall := fmt.Sprintf("%s-%s", WinEventSourceName, subSource.String())
 		err := eventlog.InstallAsEventCreate(sourceToInstall, eventlog.Info|eventlog.Warning|eventlog.Error)
@@ -74,7 +86,7 @@ func InstallWinEventSource() error {
 }
 
 // Log logs an event to the Windows Event Log
-func Log(event WinEvent) error {
+func (e *EventLogger) Log(event WinEvent) error {
 	source := fmt.Sprintf("%s-%s", WinEventSourceName, event.Type.String())
 	elog, err := eventlog.Open(source)
 	if err != nil {
@@ -104,4 +116,16 @@ func Log(event WinEvent) error {
 	}
 	fmt.Printf("Successfully logged event: %s\n", event.Message)
 	return nil
+}
+
+// init initializes the global winevent logger
+func init() {
+	once.Do(func() {
+		globalEventLogger = NewEventLogger()
+	})
+}
+
+// GetLogger returns a handle to the winevent logger
+func GetLogger() *EventLogger {
+	return globalEventLogger
 }
