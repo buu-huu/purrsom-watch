@@ -84,8 +84,32 @@ func InstallWinEventProvider() error {
 	return nil
 }
 
-// Log logs an event to the Windows Event Log
-func (e *EventLogger) Log(event WinEvent) error {
+func (e *EventLogger) LogTemplate(id EventId) {
+	event, err := CreateEvent(id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = e.logNow(event)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func (e *EventLogger) Log(id EventId, details ...interface{}) {
+	event, err := CreateEvent(id, details...)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = e.logNow(event)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// LogNow logs an event to the Windows Event
+func (e *EventLogger) logNow(event WinEvent) error {
 	source := fmt.Sprintf("%s-%s", ProviderName, event.Type.String())
 	elog, err := eventlog.Open(source)
 	if err != nil {

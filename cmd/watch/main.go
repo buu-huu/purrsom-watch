@@ -29,7 +29,6 @@ import (
 	"github.com/buu-huu/purrsom-watch/internal/watchcat"
 	"github.com/buu-huu/purrsom-watch/internal/winevent"
 	"os"
-	"time"
 )
 
 // main is the entry point for the application. It handles parsing of command line arguments and error
@@ -40,7 +39,9 @@ func main() {
 		return
 	}
 
-	eventlogger := winevent.GetLogger()
+	logger := winevent.GetLogger()
+	logger.Log(winevent.System_App_Start)
+
 	providerCheck, err := winevent.AreAllEventProvidersInstalled()
 	if !providerCheck {
 		fmt.Println("Winevent log providers not installed! Install providers first using install script.")
@@ -58,30 +59,13 @@ func main() {
 		return
 	}
 
-	fmt.Println("CONFIGURATION:")
-	err = configs.PrintConfig(configs.Configuration)
-	if err != nil {
-		fmt.Println("Error:", err)
-	}
-
 	err = watchcat.GenerateDecoyFile(configs.Configuration)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
+	logger.Log(winevent.System_Decoy_File_Created)
+	logger.Log(winevent.System_Decoy_File_Created, "decoyfile.exe")
 
 	//watchcat.Watch(configs.Configuration)
-
-	event := winevent.WinEvent{
-		Timestamp: time.Now(),
-		Message:   "Decoy file created",
-		Severity:  winevent.Info,
-		Type:      winevent.System,
-		Id:        winevent.System_Decoy_File_Created,
-	}
-
-	err = eventlogger.Log(event)
-	if err != nil {
-		fmt.Println(err)
-	}
 }
