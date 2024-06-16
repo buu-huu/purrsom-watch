@@ -49,7 +49,7 @@ func (s SubProvider) String() string {
 
 var (
 	globalEventLogger *EventLogger
-	once              sync.Once
+	loggerOnce        sync.Once
 )
 
 type EventLogger struct{}
@@ -147,7 +147,7 @@ func AreAllEventProvidersInstalled() (bool, error) {
 
 // init initializes the global winevent logger
 func init() {
-	once.Do(func() {
+	loggerOnce.Do(func() {
 		globalEventLogger = NewEventLogger()
 	})
 }
