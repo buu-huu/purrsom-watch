@@ -31,6 +31,8 @@ import (
 	"os"
 )
 
+var logger *winevent.EventLogger = winevent.GetLogger()
+
 // main is the entry point for the application. It handles parsing of command line arguments and error
 // handling. It calls the corresponding submodules of the program
 func main() {
@@ -38,8 +40,6 @@ func main() {
 		fmt.Println("Usage: purrsom_watch <config_file_path>")
 		return
 	}
-
-	logger := winevent.GetLogger()
 	logger.Log(winevent.System_App_Start)
 
 	providerCheck, err := winevent.AreAllEventProvidersInstalled()
@@ -64,8 +64,6 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
-	logger.Log(winevent.System_Decoy_File_Created)
-	logger.Log(winevent.System_Decoy_File_Created, "decoyfile.exe")
 
 	//watchcat.Watch(configs.Configuration)
 }
