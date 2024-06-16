@@ -5,6 +5,8 @@ Welcome to **PurrsomWatch**, a Golang-based software designed to detect ransomwa
 ### Disclaimer
 This repository is work in progress. Development is ongoing but will take some time. Releases will be made and tagged, when a certain set of features is implemented and tested. 
 
+Since development is in a very early stage and architecture changes a lot, the Readme and build scripts may **NOT** be up-to-date.
+
 ## 📜 Table of Contents
 - [Features](#-features)
 - [Installation](#%EF%B8%8F-installation)
