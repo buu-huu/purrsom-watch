@@ -30,7 +30,6 @@ import (
 	"github.com/buu-huu/purrsom-watch/internal/process"
 	"github.com/buu-huu/purrsom-watch/internal/watchcat"
 	"os"
-	"time"
 )
 
 var (
@@ -70,8 +69,6 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
-
-	time.Sleep(10 * time.Second)
 
 	//watchcat.Watch(configs.Configuration)
 }

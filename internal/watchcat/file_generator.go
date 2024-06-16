@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
 	"github.com/buu-huu/purrsom-watch/data/decoy"
+	"github.com/buu-huu/purrsom-watch/internal/eventlog"
 	"github.com/buu-huu/purrsom-watch/pkg/util/directory"
 	"github.com/buu-huu/purrsom-watch/pkg/util/ransomware/cryptoanalysis"
 	"os"
@@ -38,7 +39,10 @@ import (
 )
 
 // DecoyFileHandle is an exported pointer to the decoy file
-var DecoyFileHandle *DecoyFile
+var (
+	logger          = eventlog.GetLogger()
+	DecoyFileHandle *DecoyFile
+)
 
 // DecoyFile struct holds metadata and a handle to the actual file
 type DecoyFile struct {
@@ -121,6 +125,10 @@ func GenerateDecoyFile(config *configs.Config) error {
 
 	DecoyFileHandle.SizeKB = float64(fileStats.Size()) / (1 << 10)
 	DecoyFileHandle.CreatedTime = time.Now()
+
+	logger.Log(eventlog.System_Decoy_File_Created,
+		fmt.Sprintf("Path: %s\n", DecoyFileHandle.FilePath),
+		fmt.Sprintf("SizeKB: %f\n", DecoyFileHandle.SizeKB))
 
 	return nil
 }
