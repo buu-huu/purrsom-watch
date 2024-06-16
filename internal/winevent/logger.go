@@ -84,18 +84,6 @@ func InstallWinEventProvider() error {
 	return nil
 }
 
-func (e *EventLogger) LogTemplate(id EventId) {
-	event, err := CreateEvent(id)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	err = e.logNow(event)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
 func (e *EventLogger) Log(id EventId, details ...interface{}) {
 	event, err := CreateEvent(id, details...)
 	if err != nil {
