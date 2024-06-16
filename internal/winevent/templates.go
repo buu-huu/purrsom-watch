@@ -22,53 +22,35 @@
 
 package winevent
 
-import (
-	"errors"
-	"fmt"
-	"strings"
-	"time"
-)
-
-type WinEvent struct {
-	Id        EventId
-	Timestamp time.Time
-	Message   string
-	Severity  EventSeverity
-	Type      SubProvider
-}
-
-type EventSeverity uint32
-
-const (
-	Info EventSeverity = iota
-	Warning
-	Error
-)
-
-type EventId uint32
-
-const (
-	System_App_Start          EventId = 7705
-	System_App_Shutdown       EventId = 7706
-	System_App_Error          EventId = 7707
-	System_Decoy_File_Created EventId = 7805
-	System_Decoy_File_Deleted EventId = 7806
-)
-
-func CreateEvent(id EventId, details ...interface{}) (WinEvent, error) {
-	event, exists := eventTemplate[id]
-	if !exists {
-		return WinEvent{}, errors.New("event id does not exist")
-	}
-	event.Timestamp = time.Now()
-
-	if len(details) > 0 {
-		var detailStrings []string
-		for _, d := range details {
-			detailStrings = append(detailStrings, fmt.Sprint(d))
-		}
-		event.Message = fmt.Sprintf("%s | %s", event.Message, strings.Join(detailStrings, " | "))
-	}
-
-	return event, nil
+var eventTemplate = map[EventId]WinEvent{
+	System_App_Start: {
+		Id:       System_App_Start,
+		Message:  "Application started",
+		Severity: Info,
+		Type:     System,
+	},
+	System_App_Error: {
+		Id:       System_App_Error,
+		Message:  "Application encountered an error",
+		Severity: Info,
+		Type:     System,
+	},
+	System_App_Shutdown: {
+		Id:       System_App_Shutdown,
+		Message:  "Application shuts down",
+		Severity: Warning,
+		Type:     System,
+	},
+	System_Decoy_File_Created: {
+		Id:       System_Decoy_File_Created,
+		Message:  "Decoy file created",
+		Severity: Info,
+		Type:     System,
+	},
+	System_Decoy_File_Deleted: {
+		Id:       System_Decoy_File_Deleted,
+		Message:  "Decoy file deleted",
+		Severity: Warning,
+		Type:     System,
+	},
 }
