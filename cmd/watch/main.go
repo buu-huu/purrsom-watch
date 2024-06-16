@@ -74,9 +74,10 @@ func main() {
 
 	event := winevent.WinEvent{
 		Timestamp: time.Now(),
-		Message:   "This is a test log message.",
+		Message:   "Decoy file created",
 		Severity:  winevent.Info,
 		Type:      winevent.System,
+		Id:        winevent.System_Decoy_File_Created,
 	}
 
 	err = eventlogger.Log(event)
