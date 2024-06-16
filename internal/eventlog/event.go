@@ -66,9 +66,9 @@ func CreateEvent(id EventId, details ...interface{}) (WinEvent, error) {
 	if len(details) > 0 {
 		var detailStrings []string
 		for _, d := range details {
-			detailStrings = append(detailStrings, fmt.Sprint(d))
+			detailStrings = append(detailStrings, strings.TrimSuffix(fmt.Sprint(d), "\n"))
 		}
-		event.Message = fmt.Sprintf("%s | %s", event.Message, strings.Join(detailStrings, " | "))
+		event.Message = fmt.Sprintf("%s, %s", event.Message, strings.Join(detailStrings, ", "))
 	}
 
 	return event, nil
