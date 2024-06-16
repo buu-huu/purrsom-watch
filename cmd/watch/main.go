@@ -26,12 +26,14 @@ package main
 import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
+	"github.com/buu-huu/purrsom-watch/internal/eventlog"
 	"github.com/buu-huu/purrsom-watch/internal/watchcat"
-	"github.com/buu-huu/purrsom-watch/internal/winevent"
 	"os"
 )
 
-var logger *winevent.EventLogger = winevent.GetLogger()
+var (
+	logger = eventlog.GetLogger()
+)
 
 // main is the entry point for the application. It handles parsing of command line arguments and error
 // handling. It calls the corresponding submodules of the program
@@ -40,15 +42,15 @@ func main() {
 		fmt.Println("Usage: purrsom_watch <config_file_path>")
 		return
 	}
-	logger.Log(winevent.System_App_Start)
+	logger.Log(eventlog.System_App_Start)
 
-	providerCheck, err := winevent.AreAllEventProvidersInstalled()
+	providerCheck, err := eventlog.AreAllEventProvidersInstalled()
 	if !providerCheck {
 		fmt.Println("Winevent log providers not installed! Install providers first using install script.")
 		return
 	}
 	if err != nil {
-		fmt.Println("Error checking if winevent providers are installed: ", err)
+		fmt.Println("Error checking if eventlog providers are installed: ", err)
 		return
 	}
 

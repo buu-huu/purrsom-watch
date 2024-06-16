@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package winevent
+package eventlog
 
 var eventTemplate = map[EventId]WinEvent{
 	System_App_Start: {
@@ -37,7 +37,7 @@ var eventTemplate = map[EventId]WinEvent{
 	},
 	System_App_Shutdown: {
 		Id:       System_App_Shutdown,
-		Message:  "Application shuts down",
+		Message:  "Application shut down signal received",
 		Severity: Warning,
 		Type:     System,
 	},
