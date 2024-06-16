@@ -25,6 +25,7 @@ package process
 
 import (
 	"fmt"
+	"github.com/buu-huu/purrsom-watch/internal/eventlog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -35,16 +36,20 @@ const (
 	ExitDelay = 2000
 )
 
+var (
+	logger = eventlog.GetLogger()
+)
+
 // HandleProcessTermination handles OS signals which ask the process to shut down (e.g. when the system shuts down)
 // This closes all relevant queues, etc.
-func HandleProcessTermination(cleanupFunc func()) {
+func HandleProcessTermination() {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP)
 
 	go func() {
 		sig := <-sigChan
-		fmt.Println("Received OS signal:", sig)
-		cleanupFunc()
+		logger.Log(eventlog.System_App_Shutdown, fmt.Sprintf("Signal: %s", sig.String()))
+		cleanup()
 		time.Sleep(ExitDelay * time.Millisecond)
 		os.Exit(0)
 	}()

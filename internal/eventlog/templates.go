@@ -41,6 +41,12 @@ var eventTemplate = map[EventId]WinEvent{
 		Severity: Warning,
 		Type:     System,
 	},
+	System_App_Cleanup: {
+		Id:       System_App_Cleanup,
+		Message:  "Performing process cleanup",
+		Severity: Warning,
+		Type:     System,
+	},
 	System_Decoy_File_Created: {
 		Id:       System_Decoy_File_Created,
 		Message:  "Decoy file created",

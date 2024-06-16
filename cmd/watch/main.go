@@ -27,8 +27,10 @@ import (
 	"fmt"
 	"github.com/buu-huu/purrsom-watch/configs"
 	"github.com/buu-huu/purrsom-watch/internal/eventlog"
+	"github.com/buu-huu/purrsom-watch/internal/process"
 	"github.com/buu-huu/purrsom-watch/internal/watchcat"
 	"os"
+	"time"
 )
 
 var (
@@ -43,6 +45,8 @@ func main() {
 		return
 	}
 	logger.Log(eventlog.System_App_Start)
+
+	process.HandleProcessTermination()
 
 	providerCheck, err := eventlog.AreAllEventProvidersInstalled()
 	if !providerCheck {
@@ -66,6 +70,8 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
+
+	time.Sleep(10 * time.Second)
 
 	//watchcat.Watch(configs.Configuration)
 }

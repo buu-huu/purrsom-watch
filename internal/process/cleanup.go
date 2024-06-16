@@ -20,56 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package eventlog
+package process
 
 import (
-	"errors"
-	"fmt"
-	"strings"
-	"time"
+	"github.com/buu-huu/purrsom-watch/internal/eventlog"
 )
 
-type WinEvent struct {
-	Id        EventId
-	Timestamp time.Time
-	Message   string
-	Severity  EventSeverity
-	Type      SubProvider
-}
-
-type EventSeverity uint32
-
-const (
-	Info EventSeverity = iota
-	Warning
-	Error
-)
-
-type EventId uint32
-
-const (
-	System_App_Start          EventId = 7705
-	System_App_Shutdown       EventId = 7706
-	System_App_Error          EventId = 7707
-	System_App_Cleanup        EventId = 7708
-	System_Decoy_File_Created EventId = 7805
-	System_Decoy_File_Deleted EventId = 7806
-)
-
-func CreateEvent(id EventId, details ...interface{}) (WinEvent, error) {
-	event, exists := eventTemplate[id]
-	if !exists {
-		return WinEvent{}, errors.New("event id does not exist")
-	}
-	event.Timestamp = time.Now()
-
-	if len(details) > 0 {
-		var detailStrings []string
-		for _, d := range details {
-			detailStrings = append(detailStrings, fmt.Sprint(d))
-		}
-		event.Message = fmt.Sprintf("%s | %s", event.Message, strings.Join(detailStrings, " | "))
-	}
-
-	return event, nil
+func cleanup() {
+	logger.Log(eventlog.System_App_Cleanup)
+	// Todo: Logic (closing of handles, etc.)
 }

@@ -84,6 +84,7 @@ func InstallWinEventProvider() error {
 	return nil
 }
 
+// Log accepts an event id and optional details and forwards them to the logging function
 func (e *EventLogger) Log(id EventId, details ...interface{}) {
 	event, err := CreateEvent(id, details...)
 	if err != nil {
