@@ -23,7 +23,6 @@
 package process
 
 import (
-	"fmt"
 	"github.com/buu-huu/purrsom-watch/internal/eventlog"
 )
 
@@ -31,7 +30,7 @@ import (
 func cleanup() {
 	ev, err := eventlog.CreateEvent(eventlog.System_App_Cleanup)
 	if err != nil {
-		fmt.Println("Failed to create event.")
+		HandleError(err, "Failed to create event.")
 	}
 	logger.Log(ev)
 	// Todo: Logic (closing of handles, etc.)

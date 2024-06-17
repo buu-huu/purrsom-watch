@@ -61,12 +61,12 @@ var Configuration *Config
 
 // InitConfig initializes the programs configuration file
 func InitConfig(filePath string) error {
-	Configuration, err := ParseConfig(filePath)
+	config, err := ParseConfig(filePath)
 	if err != nil {
 		return err
 	}
 
-	configLegitimate, err := IsConfigFileLegitimate(Configuration)
+	configLegitimate, err := IsConfigFileLegitimate(config)
 	if !configLegitimate {
 		return errors.New("config file is not legitimate")
 	}
@@ -95,14 +95,11 @@ func PrintConfig(c *Config) error {
 	if c == nil {
 		return errors.New("configuration was not parsed")
 	}
-
 	configJSON, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
 		return err
 	}
-
 	fmt.Println(string(configJSON))
-
 	return nil
 }
 

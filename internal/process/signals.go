@@ -50,7 +50,7 @@ func HandleProcessTermination() {
 		sig := <-sigChan
 		ev, err := eventlog.CreateEvent(eventlog.System_App_Shutdown_Signal, fmt.Sprintf("Signal: %s", sig.String()))
 		if err != nil {
-			fmt.Println("Failed to create event.")
+			HandleError(err, "Failed to create event.")
 		}
 		logger.Log(ev)
 		cleanup()
