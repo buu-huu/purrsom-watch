@@ -126,9 +126,10 @@ func GenerateDecoyFile(config *configs.Config) error {
 	DecoyFileHandle.SizeKB = float64(fileStats.Size()) / (1 << 10)
 	DecoyFileHandle.CreatedTime = time.Now()
 
-	logger.Log(eventlog.System_Decoy_File_Created,
+	ev, err := eventlog.CreateEvent(eventlog.System_Decoy_File_Created,
 		fmt.Sprintf("Path: %s\n", DecoyFileHandle.FilePath),
 		fmt.Sprintf("SizeKB: %f\n", DecoyFileHandle.SizeKB))
+	logger.Log(ev)
 
 	return nil
 }
