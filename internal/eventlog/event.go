@@ -33,6 +33,7 @@ type WinEvent struct {
 	Id        EventId
 	Timestamp time.Time
 	Message   string
+	Details   []string
 	Severity  EventSeverity
 	Type      SubProvider
 }
@@ -45,16 +46,9 @@ const (
 	Error
 )
 
-type EventId uint32
-
-const (
-	System_App_Start          EventId = 7705
-	System_App_Shutdown       EventId = 7706
-	System_App_Error          EventId = 7707
-	System_App_Cleanup        EventId = 7708
-	System_Decoy_File_Created EventId = 7805
-	System_Decoy_File_Deleted EventId = 7806
-)
+func (e EventSeverity) String() string {
+	return [...]string{"Info", "Warning", "Error"}[e]
+}
 
 func CreateEvent(id EventId, details ...interface{}) (WinEvent, error) {
 	event, exists := eventTemplate[id]
@@ -68,8 +62,16 @@ func CreateEvent(id EventId, details ...interface{}) (WinEvent, error) {
 		for _, d := range details {
 			detailStrings = append(detailStrings, strings.TrimSuffix(fmt.Sprint(d), "\n"))
 		}
-		event.Message = fmt.Sprintf("%s, %s", event.Message, strings.Join(detailStrings, ", "))
+		event.Details = detailStrings
+		//event.Message = fmt.Sprintf("%s, %s", event.Message, strings.Join(detailStrings, ", "))
 	}
-
 	return event, nil
+}
+
+func (ev WinEvent) String() string {
+	return fmt.Sprintf("%s - %s - %s - %s",
+		ev.Timestamp.String(),
+		ev.Severity.String(),
+		ev.Message,
+		strings.Join(ev.Details, ", "))
 }
