@@ -50,24 +50,28 @@ func main() {
 
 	providerCheck, err := eventlog.AreAllEventProvidersInstalled()
 	if !providerCheck {
-		fmt.Println("Winevent log providers not installed! Install providers first using install script.")
+		ev, err = eventlog.CreateEvent(eventlog.System_EventProviderNotInstalled)
+		if err != nil {
+			process.HandleError(err, "Error creating event")
+		}
+		logger.Log(ev)
 		return
 	}
 	if err != nil {
-		fmt.Println("Error checking if eventlog providers are installed: ", err)
+		process.HandleError(err, "Error checking if eventlog providers are installed")
 		return
 	}
 
 	configFilePath := os.Args[1]
 	err = configs.InitConfig(configFilePath)
 	if err != nil {
-		fmt.Println(err)
+		process.HandleError(err, "Error reading config file. Check path.")
 		return
 	}
 
 	err = watchcat.GenerateDecoyFile(configs.Configuration)
 	if err != nil {
-		fmt.Println("Error:", err)
+		process.HandleError(err)
 		return
 	}
 

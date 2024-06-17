@@ -153,6 +153,11 @@ func AreAllEventProvidersInstalled() (bool, error) {
 	for _, subProvider := range []SubProvider{System, Detection} {
 		installed, err := IsEventProviderInstalled(subProvider)
 		if err != nil {
+			ev, err := CreateEvent(System_App_Error, err)
+			if err != nil {
+				fmt.Println("Failed to create event:", err)
+			}
+			globalEventLogger.Log(ev)
 			return false, err
 		}
 		if !installed {
