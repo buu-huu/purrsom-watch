@@ -36,3 +36,9 @@ jobs:
 
       - name: Build project
         run: go build -C cmd/watch -o bin/out.exe
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: out.exe
+          path: bin/out.exe
