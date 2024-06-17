@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Package eventlog contains data and program logic for winevent logging
 package eventlog
 
 import (
@@ -50,6 +51,7 @@ func (e EventSeverity) String() string {
 	return [...]string{"Info", "Warning", "Error"}[e]
 }
 
+// CreateEvent creates a WinEvent from a list of templates
 func CreateEvent(id EventId, details ...interface{}) (WinEvent, error) {
 	event, exists := eventTemplate[id]
 	if !exists {

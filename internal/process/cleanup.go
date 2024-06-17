@@ -27,6 +27,7 @@ import (
 	"github.com/buu-huu/purrsom-watch/internal/eventlog"
 )
 
+// cleanup performs a cleanup of the application before safely shutting down
 func cleanup() {
 	ev, err := eventlog.CreateEvent(eventlog.System_App_Cleanup)
 	if err != nil {

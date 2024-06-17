@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Package main contains the main function and is therefore pretty slim
+// Package main contains the main function
 package main
 
 import (
