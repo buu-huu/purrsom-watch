@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Package configs contains program configuration related stuff. This includes the config file that must
-// be provided to run the application
+// Package configs contains program configuration related stuff. This includes the
+// config file that must be provided to run the application
 package configs
 
 import (
@@ -117,7 +117,8 @@ func IsConfigFileLegitimate(c *Config) (bool, error) {
 	// Validate FileDir
 	re := regexp.MustCompile(FileDirRegex)
 	if !re.MatchString(c.PurrEngine.DecoyFile.Location.FileDir) {
-		return false, errors.New(fmt.Sprint("Config attribute FileDir does not match regex ", FileDirRegex))
+		return false, errors.New(fmt.Sprint(
+			"Config attribute FileDir does not match regex ", FileDirRegex))
 	}
 	return true, nil
 }

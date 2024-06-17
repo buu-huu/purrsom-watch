@@ -59,7 +59,7 @@ func NewEventLogger() *EventLogger {
 	return &EventLogger{}
 }
 
-// InstallWinEventProvider installs the event provider for the application TODO: Unexport function after testing
+// InstallWinEventProvider installs the event provider for the application
 func InstallWinEventProvider() error {
 	for _, subProvider := range []SubProvider{System, Detection} {
 		providerToInstall := fmt.Sprintf("%s-%s", ProviderName, subProvider.String())
@@ -68,14 +68,20 @@ func InstallWinEventProvider() error {
 			// Trying to parse access denied error here
 			var errno syscall.Errno
 			if errors.As(err, &errno) && errors.Is(errno, syscall.ERROR_ACCESS_DENIED) {
-				fmt.Printf("Error installing eventlog log provider %s. Insufficient permissions: %s\n", providerToInstall, syscall.ERROR_ACCESS_DENIED)
+				fmt.Printf("Error installing eventlog log provider %s. Insufficient permissions: %s\n",
+					providerToInstall,
+					syscall.ERROR_ACCESS_DENIED)
 				return err
 			} else {
 				// Fall back to string of the error message if not a permission problem
 				if strings.Contains(err.Error(), "registry key already exists") {
-					fmt.Printf("It appears, that eventlog log provider %s is already registered/installed: %s\n", providerToInstall, err.Error())
+					fmt.Printf("It appears, that eventlog log provider %s is already registered/installed: %s\n",
+						providerToInstall,
+						err.Error())
 				} else {
-					fmt.Printf("Unknown error registering/installing eventlog log provider %s: %s\n", providerToInstall, err.Error())
+					fmt.Printf("Unknown error registering/installing eventlog log provider %s: %s\n",
+						providerToInstall,
+						err.Error())
 				}
 			}
 		} else {
