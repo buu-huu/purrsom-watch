@@ -84,16 +84,17 @@ func InstallWinEventProvider() error {
 	return nil
 }
 
-// Log accepts an event id and optional details and forwards them to the logging function
+// Log accepts an event and forwards it to the logging function
+// Todo: Queueing and error handling here
 func (e *EventLogger) Log(ev WinEvent) {
-	fmt.Println("Trying to log event:", ev)
+	fmt.Printf("Trying to log event %d\n", ev.Id)
 	if err := e.logNow(ev); err != nil {
 		fmt.Println("Failed to log event:", ev, err)
 		// Todo: Queue for another try and error handling
 	}
 }
 
-// LogNow logs an event to the Windows Event
+// logNow logs an event to the Windows Event
 func (e *EventLogger) logNow(ev WinEvent) error {
 	source := fmt.Sprintf("%s-%s", ProviderName, ev.Type.String())
 	elog, err := eventlog.Open(source)
@@ -103,15 +104,21 @@ func (e *EventLogger) logNow(ev WinEvent) error {
 	}
 	defer elog.Close()
 
+	logMessage := fmt.Sprintf("%s - %s - %s - %s",
+		ev.Timestamp.String(),
+		ev.Severity.String(),
+		ev.Message,
+		strings.Join(ev.Details, ", "))
+
 	switch ev.Severity {
 	case Info:
-		err = elog.Info(uint32(ev.Id), ev.Message)
+		err = elog.Info(uint32(ev.Id), logMessage)
 	case Warning:
-		err = elog.Warning(uint32(ev.Id), ev.Message)
+		err = elog.Warning(uint32(ev.Id), logMessage)
 	case Error:
-		err = elog.Error(uint32(ev.Id), ev.Message)
+		err = elog.Error(uint32(ev.Id), logMessage)
 	default:
-		err = elog.Info(uint32(ev.Id), ev.Message)
+		err = elog.Info(uint32(ev.Id), logMessage)
 		fmt.Printf("unknown ev severity: %d, defaulting to info severity\n", ev.Severity)
 	}
 
@@ -119,7 +126,7 @@ func (e *EventLogger) logNow(ev WinEvent) error {
 		fmt.Println("Failed to write eventlog log ev:", err)
 		return err
 	}
-	fmt.Printf("Successfully logged ev: %s\n", ev.Message)
+	fmt.Printf("Successfully logged event: %s\n", ev.String())
 	return nil
 }
 
@@ -148,7 +155,11 @@ func AreAllEventProvidersInstalled() (bool, error) {
 			return false, err
 		}
 		if !installed {
-			fmt.Printf("Event provider %s is not installed.\n", subProvider.String())
+			ev, err := CreateEvent(System_EventProviderNotInstalled, subProvider.String())
+			if err != nil {
+				fmt.Println("Failed to create event:", err)
+			}
+			globalEventLogger.Log(ev)
 			return false, nil
 		}
 	}
