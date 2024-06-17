@@ -50,6 +50,5 @@ func CreateAbsoluteDirString(username string, fileDir string, placeholder string
 	fileDirSpecific := dirStringSplit[1]
 	fileDirAbsolute := filepath.Join(userDir, fileDirSpecific)
 
-	//fmt.Println(fileDirAbsolute)
 	return fileDirAbsolute, nil
 }
