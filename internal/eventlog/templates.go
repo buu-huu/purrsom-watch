@@ -22,6 +22,19 @@
 
 package eventlog
 
+type EventId uint32
+
+const (
+	System_App_Start                 EventId = 7705
+	System_App_Shutdown_Signal       EventId = 7706
+	System_App_Error                 EventId = 7707
+	System_App_Cleanup               EventId = 7708
+	System_App_Shutdown_General      EventId = 7709
+	System_Decoy_File_Created        EventId = 7805
+	System_Decoy_File_Deleted        EventId = 7806
+	System_EventProviderNotInstalled EventId = 7905
+)
+
 var eventTemplate = map[EventId]WinEvent{
 	System_App_Start: {
 		Id:       System_App_Start,
@@ -35,8 +48,8 @@ var eventTemplate = map[EventId]WinEvent{
 		Severity: Info,
 		Type:     System,
 	},
-	System_App_Shutdown: {
-		Id:       System_App_Shutdown,
+	System_App_Shutdown_Signal: {
+		Id:       System_App_Shutdown_Signal,
 		Message:  "Application shut down signal received",
 		Severity: Warning,
 		Type:     System,
@@ -44,6 +57,12 @@ var eventTemplate = map[EventId]WinEvent{
 	System_App_Cleanup: {
 		Id:       System_App_Cleanup,
 		Message:  "Performing process cleanup",
+		Severity: Warning,
+		Type:     System,
+	},
+	System_App_Shutdown_General: {
+		Id:       System_App_Shutdown_General,
+		Message:  "Application shuts down",
 		Severity: Warning,
 		Type:     System,
 	},
@@ -56,6 +75,12 @@ var eventTemplate = map[EventId]WinEvent{
 	System_Decoy_File_Deleted: {
 		Id:       System_Decoy_File_Deleted,
 		Message:  "Decoy file deleted",
+		Severity: Warning,
+		Type:     System,
+	},
+	System_EventProviderNotInstalled: {
+		Id:       System_EventProviderNotInstalled,
+		Message:  "WinEvent provider is not installed",
 		Severity: Warning,
 		Type:     System,
 	},
