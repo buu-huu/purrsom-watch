@@ -48,7 +48,11 @@ func HandleProcessTermination() {
 
 	go func() {
 		sig := <-sigChan
-		logger.Log(eventlog.System_App_Shutdown, fmt.Sprintf("Signal: %s", sig.String()))
+		ev, err := eventlog.CreateEvent(eventlog.System_App_Shutdown_Signal, fmt.Sprintf("Signal: %s", sig.String()))
+		if err != nil {
+			fmt.Println("Failed to create event.")
+		}
+		logger.Log(ev)
 		cleanup()
 		time.Sleep(ExitDelay * time.Millisecond)
 		os.Exit(0)
