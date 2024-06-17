@@ -43,7 +43,8 @@ func main() {
 		fmt.Println("Usage: purrsom_watch <config_file_path>")
 		return
 	}
-	logger.Log(eventlog.System_App_Start)
+	ev, _ := eventlog.CreateEvent(eventlog.System_App_Start)
+	logger.Log(ev)
 
 	process.HandleProcessTermination()
 
