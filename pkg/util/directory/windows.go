@@ -36,11 +36,11 @@ import (
 func CreateAbsoluteDirString(username string, fileDir string, placeholder string) (string, error) {
 	var userDir string
 	if username != "" {
-		username, err := user.Lookup(username)
+		usrName, err := user.Lookup(username)
 		if err != nil {
 			return "", err
 		}
-		userDir = username.HomeDir
+		userDir = usrName.HomeDir
 	}
 	placeholderPrepared := placeholder + "/"
 	dirStringSplit := strings.SplitN(fileDir, placeholderPrepared, 2)
