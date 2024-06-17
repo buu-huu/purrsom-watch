@@ -40,7 +40,7 @@ func Watch(config *configs.Config) {
 	}
 	defer watcher.Close()
 
-	directory, err := directory.CreateAbsoluteDirString(
+	dir, err := directory.CreateAbsoluteDirString(
 		config.PurrEngine.DecoyFile.Location.Username,
 		config.PurrEngine.DecoyFile.Location.FileDir,
 		configs.PlaceholderUserdir)
@@ -48,7 +48,7 @@ func Watch(config *configs.Config) {
 		fmt.Println(err)
 	}
 
-	err = watcher.Add(directory)
+	err = watcher.Add(dir)
 	if err != nil {
 		log.Fatal(err)
 	}
