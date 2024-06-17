@@ -112,7 +112,7 @@ func (e *EventLogger) logNow(ev WinEvent) error {
 		err = elog.Error(uint32(ev.Id), ev.Message)
 	default:
 		err = elog.Info(uint32(ev.Id), ev.Message)
-		fmt.Println("unknown ev severity: %d, defaulting to info severity", ev.Severity)
+		fmt.Printf("unknown ev severity: %d, defaulting to info severity\n", ev.Severity)
 	}
 
 	if err != nil {
