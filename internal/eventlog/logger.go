@@ -85,21 +85,17 @@ func InstallWinEventProvider() error {
 }
 
 // Log accepts an event id and optional details and forwards them to the logging function
-func (e *EventLogger) Log(id EventId, details ...interface{}) {
-	event, err := CreateEvent(id, details...)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	err = e.logNow(event)
-	if err != nil {
-		fmt.Println(err)
+func (e *EventLogger) Log(ev WinEvent) {
+	fmt.Println("Trying to log event:", ev)
+	if err := e.logNow(ev); err != nil {
+		fmt.Println("Failed to log event:", ev, err)
+		// Todo: Queue for another try and error handling
 	}
 }
 
 // LogNow logs an event to the Windows Event
-func (e *EventLogger) logNow(event WinEvent) error {
-	source := fmt.Sprintf("%s-%s", ProviderName, event.Type.String())
+func (e *EventLogger) logNow(ev WinEvent) error {
+	source := fmt.Sprintf("%s-%s", ProviderName, ev.Type.String())
 	elog, err := eventlog.Open(source)
 	if err != nil {
 		fmt.Printf("Failed to open eventlog log for provider %s: %s\n", source, err.Error())
@@ -107,22 +103,23 @@ func (e *EventLogger) logNow(event WinEvent) error {
 	}
 	defer elog.Close()
 
-	switch event.Severity {
+	switch ev.Severity {
 	case Info:
-		err = elog.Info(uint32(event.Id), event.Message)
+		err = elog.Info(uint32(ev.Id), ev.Message)
 	case Warning:
-		err = elog.Warning(uint32(event.Id), event.Message)
+		err = elog.Warning(uint32(ev.Id), ev.Message)
 	case Error:
-		err = elog.Error(uint32(event.Id), event.Message)
+		err = elog.Error(uint32(ev.Id), ev.Message)
 	default:
-		return fmt.Errorf("unknown event severity: %d", event.Severity)
+		err = elog.Info(uint32(ev.Id), ev.Message)
+		fmt.Println("unknown ev severity: %d, defaulting to info severity", ev.Severity)
 	}
 
 	if err != nil {
-		fmt.Println("Failed to write eventlog log event:", err)
+		fmt.Println("Failed to write eventlog log ev:", err)
 		return err
 	}
-	fmt.Printf("Successfully logged event: %s\n", event.Message)
+	fmt.Printf("Successfully logged ev: %s\n", ev.Message)
 	return nil
 }
 
