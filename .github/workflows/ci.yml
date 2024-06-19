@@ -16,31 +16,30 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        go-version: [ '1.22', '1.21' ]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
         with:
-          go-version: '^1.22'
-
-      - name: Cache Go modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/go-build
-            /go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          go-version: ${{ matrix.go-version }}
+          cache-dependency-path: go.sum
 
       - name: Install dependencies
         run: go mod tidy
 
+      # Build Watch
       - name: Build project
-        run: go build -C cmd/watch -o bin/out.exe
+        run: go build -v -C cmd/watch -o bin/watch.exe
+
+      # Build Installer
+      - name: Build project
+        run: go build -v -C cmd/install -o bin/install.exe
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
