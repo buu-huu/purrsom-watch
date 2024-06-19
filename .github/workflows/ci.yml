@@ -37,7 +37,7 @@ jobs:
 
       # Build Watch
       - name: Build project
-        run: go build -v -C cmd/watch -o bin/watch.exe
+        run: go build cmd/watch -o bin/watch.exe
         env:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
