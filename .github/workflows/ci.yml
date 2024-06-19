@@ -48,7 +48,7 @@ jobs:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
       - name: Upload compiled binary (Watch)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: watch.exe
           path: bin/watch.exe
@@ -56,7 +56,7 @@ jobs:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
       - name: Upload compiled binary (Installer)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: install.exe
           path: bin/install.exe
