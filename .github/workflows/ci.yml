@@ -43,7 +43,7 @@ jobs:
 
       # Build Installer
       - name: Build installer
-        run: go build -o bin/watch.exe ./cmd/install
+        run: go build -o bin/install.exe ./cmd/install
         env:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
@@ -58,7 +58,7 @@ jobs:
       - name: Upload compiled binary (Installer)
         uses: actions/upload-artifact@v3
         with:
-          name: installer.exe
-          path: bin/installer.exe
+          name: install.exe
+          path: bin/install.exe
         env:
           LOG_LEVEL: ${{ inputs.logLevel }}
