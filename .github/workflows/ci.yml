@@ -32,17 +32,25 @@ jobs:
 
       - name: Install dependencies
         run: go mod tidy
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel }}
 
       # Build Watch
       - name: Build project
         run: go build -v -C cmd/watch -o bin/watch.exe
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel }}
 
       # Build Installer
       - name: Build project
         run: go build -v -C cmd/install -o bin/install.exe
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: out.exe
           path: bin/out.exe
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel }}
