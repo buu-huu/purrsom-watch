@@ -36,14 +36,14 @@ jobs:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
       # Build Watch
-      - name: Build project
-        run: go build cmd/watch -o bin/watch.exe
+      - name: Build watch (main application)
+        run: go build -o bin/watch.exe ./cmd/watch
         env:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
       # Build Installer
-      - name: Build project
-        run: go build -v -C cmd/install -o bin/install.exe
+      - name: Build installer
+        run: go build -o bin/watch.exe ./cmd/install
         env:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
