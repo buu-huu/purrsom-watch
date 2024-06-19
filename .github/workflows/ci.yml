@@ -47,10 +47,18 @@ jobs:
         env:
           LOG_LEVEL: ${{ inputs.logLevel }}
 
-      - name: Upload build artifacts
+      - name: Upload compiled binary (Watch)
         uses: actions/upload-artifact@v3
         with:
-          name: out.exe
-          path: bin/out.exe
+          name: watch.exe
+          path: bin/watch.exe
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel }}
+
+      - name: Upload compiled binary (Installer)
+        uses: actions/upload-artifact@v3
+        with:
+          name: installer.exe
+          path: bin/installer.exe
         env:
           LOG_LEVEL: ${{ inputs.logLevel }}
