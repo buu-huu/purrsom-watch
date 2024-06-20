@@ -82,10 +82,10 @@ func TestInitConfig(t *testing.T) {
 
 // Test cases for ParseConfig
 func TestParseConfig(t *testing.T) {
-	tmpfile := createTempConfigFile(t, validConfigJSON)
-	defer os.Remove(tmpfile.Name())
+	tmpFile := createTempConfigFile(t, validConfigJSON)
+	defer os.Remove(tmpFile.Name())
 
-	config, err := ParseConfig(tmpfile.Name())
+	config, err := ParseConfig(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("ParseConfig() error = %v", err)
 	}
