@@ -65,7 +65,6 @@ func CreateEvent(id EventId, details ...interface{}) (WinEvent, error) {
 			detailStrings = append(detailStrings, strings.TrimSuffix(fmt.Sprint(d), "\n"))
 		}
 		event.Details = detailStrings
-		//event.Message = fmt.Sprintf("%s, %s", event.Message, strings.Join(detailStrings, ", "))
 	}
 	return event, nil
 }
